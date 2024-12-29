@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itzeng.springbootstoptool.mapper.EvaluateMapper">
+    <!--    修改用户评价表-->
+    <update id="amendEvaluate">
+        update evaluate
+        <set>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="orderId != null">
+                orderId = #{orderId},
+            </if>
+            <if test="body != null and body != ''">
+                body = #{body},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+        </set>
+        where evaluateId = #{evaluateId}
+    </update>
+
+    <!--    批量删除用户评价表-->
+    <delete id="deleteEvaluate">
+        delete
+        from evaluate
+        where evaluateId in
+        <foreach collection="evaluateId" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+</mapper>

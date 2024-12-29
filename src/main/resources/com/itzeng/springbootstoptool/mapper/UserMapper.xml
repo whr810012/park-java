@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzeng.springbootstoptool.mapper.UserMapper">
+    <!--    修改user用户对象-->
+    <update id="amenduser">
+        update user
+        <set>
+            <if test="userName != null and userName != ''">
+                userName = #{userName},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="carInfo != null and carInfo != ''">
+                carInfo = #{carInfo},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime},
+            </if>
+        </set>
+        where openId = #{openId}
+    </update>
+
+
+<!--    批量删除用户对象-->
+    <delete id="deptById">
+        delete
+        from user
+        where openId in
+        <foreach collection="openId" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+</mapper>

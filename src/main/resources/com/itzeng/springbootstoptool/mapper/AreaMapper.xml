@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzeng.springbootstoptool.mapper.AreaMapper">
+    <!--    修改区域-->
+    <update id="areaAmend">
+        update area
+        <set>
+            <if test="areaName != null and areaName != ''">
+                areaName = #{areaName},
+            </if>
+        </set>
+        where areaid = #{areaid}
+    </update>
+
+
+    <!--    批量删除区域-->
+    <delete id="areadelete">
+        delete
+        from area
+        where areaid in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itzeng.springbootstoptool.mapper.OrderMapper">
+<!--    修改订单信息-->
+    <update id="amendOrder">
+        update orderey
+        <set>
+            <if test="openId != null">
+                openId = #{openId},
+            </if>
+            <if test="stallId != null">
+                stall_id = #{stallId},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="totalPrice != null and totalPrice != ''">
+                totalPrice = #{totalPrice},
+            </if>
+            <if test="outTime != null">
+                outTime = #{outTime},
+            </if>
+            <if test="startTime != null">
+                startTime = #{startTime},
+            </if>
+            <if test="endTime != null">
+                endTime = #{endTime},
+            </if>
+            <if test="discount != null and discount != ''">
+                discount = #{discount},
+            </if>
+
+        </set>
+        where orderid = #{orderid}
+    </update>
+
+<!--    批量删除订单-deleteOrder-->
+    <delete id="deleteOrder">
+        delete
+        from orderey
+        where orderid in
+        <foreach collection="orderid" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+</mapper>
