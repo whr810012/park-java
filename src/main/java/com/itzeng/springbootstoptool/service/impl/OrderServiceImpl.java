@@ -9,6 +9,7 @@ import com.itzeng.springbootstoptool.pojo.vo.StallVO;
 import com.itzeng.springbootstoptool.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -33,18 +34,34 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrderall() {
         List<Order> orderall = orderMapper.getOrderall();
         orderall.forEach(order -> {
-            LocalDateTime dateTime = LocalDateTime.now();
+            LocalDateTime startTime = order.getStartTime();
+            //订单超时
+            //订单结束时间
             LocalDateTime endTime = order.getEndTime();
-            Duration duration = Duration.between(endTime, dateTime);
-            // 获取时间差的秒数
+
+            Duration duration = Duration.between(endTime, LocalDateTime.now());
+            Duration durations = Duration.between(startTime, LocalDateTime.now());
+            // 获取时间差的秒数-超时
             long seconds = duration.getSeconds();
+            long seconds1 = durations.getSeconds();
+//            获取订单状态
+            Integer status = order.getStatus();
             //大于0则超时
-            if (seconds > 0) {
-            //订单超时改变status状态
+            if (seconds > 0 && status == 1) {
+                //订单超时改变status状态
                 order.setStatus(2);
                 orderMapper.amendOrder(order);
             }
+            if (seconds1 > 0 && status == 0) {
+                order.setStatus(1);
+                Stall getstalls = stallMapper.getstalls(order.getStallId());
+                getstalls.setStatus(2);
+                stallMapper.amendStall(getstalls);
+                orderMapper.amendOrder(order);
+            }
         });
+
+
         return orderall;
     }
 
@@ -64,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
         //车位表拿到反值
         Stall orderStallId = stallMapper.getOrderStallId(stallId);
         //判断订单的状态来改变车位的状态
-        if (order.getStatus() == 0){
+        if (order.getStatus() == 0) {
             orderStallId.setStatus(1);
         } else if (order.getStatus() == 1) {
             orderStallId.setStatus(2);
@@ -76,8 +93,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //修改订单信息
-    @Override
+    @Transactional
     public void amendOrder(Order order) {
+        Integer stallId = order.getStallId();
+        Stall stall = stallMapper.getstalls(stallId);
+        if (order.getStatus() == 3) {
+            stall.setStatus(0);
+            stallMapper.amendStall(stall);
+        }
         orderMapper.amendOrder(order);
     }
 
@@ -87,3 +110,4 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.orderAll(orderid);
     }
 }
+

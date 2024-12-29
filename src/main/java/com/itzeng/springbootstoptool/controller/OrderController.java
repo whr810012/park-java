@@ -65,7 +65,6 @@ public class OrderController {
         return Result.success();
     }
 
-
     @ApiOperation("查看详情订单")
     @GetMapping("/order/all")
     public Result orderAll(@RequestParam Integer orderid) {

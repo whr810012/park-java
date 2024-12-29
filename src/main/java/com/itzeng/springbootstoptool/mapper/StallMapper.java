@@ -39,4 +39,8 @@ public interface StallMapper {
     //根据订单表修改其车位的状态
     @Select("select * from stall where stall_id = #{stallId}")
     Stall getOrderStallId(Integer stallId);
+
+    //根据车位id查询车位
+    @Select("select * from stall where stall_id = #{stallId}")
+    Stall getstalls(Integer stallId);
 }
